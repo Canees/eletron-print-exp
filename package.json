@@ -1,0 +1,54 @@
+{
+  "name": "cz-rock",
+  "version": "1.0.0",
+  "main": "main.js",
+  "author": "Caner",
+  "description": "a project",
+  "scripts": {
+    "dev": "vite --host",
+    "edev": "electron .",
+    "preedev": "vite build",
+    "make": "electron-forge make",
+    "pmake": "electron-forge package",
+    "premake": "vite build",
+    "prepmake": "vite build"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.63",
+    "@electron-forge/maker-zip": "^6.0.0-beta.63",
+    "axios": "^0.24.0",
+    "echarts": "^5.3.2",
+    "electron": "^17.2.0",
+    "eslint": "^8.15.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-vue": "^9.1.0",
+    "glob": "^7.2.0",
+    "less": "^4.1.2",
+    "view-design": "^4.7.0",
+    "vite": "^2.8.6",
+    "vite-plugin-compression": "^0.3.6",
+    "vite-plugin-eslint": "^1.6.1",
+    "vite-plugin-vue2": "^1.9.0",
+    "vue": "^2.6.14",
+    "vue-router": "^3.5.3",
+    "vue-template-compiler": "^2.6.14",
+    "vuex": "^3.6.2"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "asar": true,
+        "ignore": "(out|vite.config.js|README.md|env.prod|env.dev|.gitignore|.eslintrc.js|src|public|node_modules|package-lock.json)"
+      },
+      "makers": [
+        {
+          "name": "@electron-forge/maker-zip"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "vue-calendar-component": "^2.8.2"
+  }
+}

@@ -1,0 +1,4 @@
+# 排除eslint检查文件
+utils
+/dist
+/public
