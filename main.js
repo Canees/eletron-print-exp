@@ -76,8 +76,13 @@ app.on('ready', async () => {
   })
   // 监听是否打开print
   ipcMain.on('createBW', (state) => {
-    // print.close()
+    // TODO: 页面数据生成PDF
+
+    // TODO: 数据回传打印组件
+
+    // 显示打印组件
     print.show()
+
     console.log(123, state)
   })
 })
