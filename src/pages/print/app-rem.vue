@@ -13,11 +13,11 @@
           <span>目标打印机</span>
           <div>
             <Select
-              v-model="selectData.deviceName"
+              v-model="model"
               prefix="md-print"
             >
               <Option
-                v-for="item in deviceName"
+                v-for="item in List"
                 :key="item.value"
                 :value="item.value"
               >
@@ -26,14 +26,14 @@
             </Select>
           </div>
         </div>
-        <!-- <div>
+        <div>
           <span>页面</span>
           <div>
             <Select
-              v-model="selectData.pagesPerSheet"
+              v-model="model"
             >
               <Option
-                v-for="item in pagesPerSheet"
+                v-for="item in List"
                 :key="item.value"
                 :value="item.value"
               >
@@ -41,13 +41,13 @@
               </Option>
             </Select>
           </div>
-        </div> -->
+        </div>
         <div>
           <span>份数</span>
           <div>
             <InputNumber
-              v-model="selectData.copies"
-              :max="9999"
+              v-model="model1"
+              :max="10"
               :min="1"
             />
           </div>
@@ -56,10 +56,10 @@
           <span>布局</span>
           <div>
             <Select
-              v-model="selectData.Landscape"
+              v-model="model"
             >
               <Option
-                v-for="item in Landscape"
+                v-for="item in List"
                 :key="item.value"
                 :value="item.value"
               >
@@ -79,10 +79,10 @@
                   <span>纸质尺寸</span>
                   <div>
                     <Select
-                      v-model="selectData.pageSize"
+                      v-model="model"
                     >
                       <Option
-                        v-for="item in pageSize"
+                        v-for="item in List"
                         :key="item.value"
                         :value="item.value"
                       >
@@ -95,10 +95,10 @@
                   <span>每个工作表的页数</span>
                   <div>
                     <Select
-                      v-model="selectData.pagesPerSheet"
+                      v-model="model"
                     >
                       <Option
-                        v-for="item in pagesPerSheet"
+                        v-for="item in List"
                         :key="item.value"
                         :value="item.value"
                       >
@@ -111,10 +111,10 @@
                   <span>边距</span>
                   <div>
                     <Select
-                      v-model="selectData.margins"
+                      v-model="model"
                     >
                       <Option
-                        v-for="item in margins"
+                        v-for="item in List"
                         :key="item.value"
                         :value="item.value"
                       >
@@ -127,10 +127,10 @@
                   <span>打印质量</span>
                   <div>
                     <Select
-                      v-model="selectData.dpi"
+                      v-model="model"
                     >
                       <Option
-                        v-for="item in dpi"
+                        v-for="item in List"
                         :key="item.value"
                         :value="item.value"
                       >
@@ -143,10 +143,10 @@
                   <span>缩放</span>
                   <div>
                     <Select
-                      v-model="selectData.scaleFactor"
+                      v-model="model"
                     >
                       <Option
-                        v-for="item in scaleFactor"
+                        v-for="item in List"
                         :key="item.value"
                         :value="item.value"
                       >
@@ -156,24 +156,15 @@
                   </div>
                 </div>
                 <div class="resetStyle">
-                  <span>双面</span>
+                  <span>选项</span>
                   <div>
-                    <Checkbox v-model="duplex">
-                      双面打印
-                    </Checkbox>
-                    <div v-if="duplex">
-                      <Select
-                        v-model="selectData.duplexMode"
-                      >
-                        <Option
-                          v-for="item in duplexMode"
-                          :key="item.value"
-                          :value="item.value"
-                        >
-                          {{ item.label }}
-                        </Option>
-                      </Select>
-                    </div>
+                    <CheckboxGroup
+                      v-model="checkAllGroup"
+                    >
+                      <Checkbox label="双面打印" />
+                      <Checkbox label="页面页脚" />
+                      <Checkbox label="背景图形" />
+                    </CheckboxGroup>
                   </div>
                 </div>
                 <div>
@@ -200,146 +191,21 @@
 export default {
   data() {
     return {
-      // 打印机列表
-      deviceName: [
+      model: 'test',
+      model1: 1,
+      checkAllGroup: [],
+      List: [
         {
           value: 'test',
           label: 'test'
         }
-      ],
-      // 工作表的页数
-      pagesPerSheet: [
-        {
-          value: 1,
-          label: '1'
-        },
-        {
-          value: 2,
-          label: '2'
-        },
-        {
-          value: 4,
-          label: '4'
-        },
-        {
-          value: 6,
-          label: '6'
-        },
-        {
-          value: 9,
-          label: '9'
-        },
-        {
-          value: 16,
-          label: '16'
-        }
-      ],
-      // 布局
-      Landscape: [
-        {
-          value: 0,
-          label: '纵向'
-        },
-        {
-          value: 1,
-          label: '横向'
-        }
-      ],
-      // 页面 尺寸
-      pageSize: [
-        {
-          value: 'A4',
-          label: 'A4'
-        },
-        {
-          value: 'A5',
-          label: 'A5'
-        }
-      ],
-      // 边距
-      margins: [
-        {
-          value: 'default',
-          label: '默认'
-        },
-        {
-          value: 'printableArea',
-          label: '可打印区域'
-        },
-        {
-          value: 'none',
-          label: '无'
-        }
-      ],
-      // 分辨率
-      dpi: [
-        {
-          value: 600,
-          label: '600 dpi'
-        },
-        {
-          value: 1200,
-          label: '1200 dpi'
-        }
-      ],
-      // 缩放
-      scaleFactor: [
-        {
-          value: 0,
-          label: '200%'
-        },
-        {
-          value: 1,
-          label: '150%'
-        },
-        {
-          value: 2,
-          label: '130%'
-        },
-        {
-          value: 3,
-          label: '100%'
-        },
-        {
-          value: 4,
-          label: '50%'
-        },
-        {
-          value: 5,
-          label: '30%'
-        }
-      ],
-      // 双面打印
-      duplexMode: [
-        {
-          value: 'shortEdge',
-          label: '短边翻转'
-        },
-        {
-          value: 'longEdge',
-          label: '长边翻转'
-        }
-      ],
-      // 选定数据
-      selectData: {
-        deviceName: 'test', // 目标打印机
-        pagesPerSheet: 1, // 工作表的页数
-        copies: 1, // 份数
-        Landscape: 0, // 布局
-        dpi: 600, // 打印质量
-        margins: 'default', // 边距
-        scaleFactor: 3, // 缩放
-        pageSize: 'A4', // 纸张尺寸
-        duplexMode: 'shortEdge'// 双面打印
-      },
-      duplex: false
+      ]
     }
   },
   methods: {
-
-    // 关闭打印
     close() {
       const electron = window.$electron || null
+      console.log(electron)
       if (electron) {
         electron.ipcRenderer.send('closePrint', false)
       }
@@ -355,28 +221,26 @@ export default {
   padding: 0;
   overflow: hidden;
   display: flex;
-  font-size: 15px;
+  font-size: 0.15rem;
   color: black;
   .left{
-    width: 560px;
-    height: 760px;
+    width: 5.6rem;
     background: rgb(218, 220, 224);
-    overflow-y: scroll;
-    overflow-x: hidden;
+    overflow: auto;
   }
   .right{
-    width: 410px;
-    height: 710px;
-    padding-top: 10px;
-    overflow-y: overlay;
+    width: 4.1rem;
+    height: 7rem;
+    padding-top: 0.2rem;
+    overflow-y:overlay;
     // 修改图标
     /deep/ .ivu-icon-ios-arrow-up:before{
       content:"\f343";
-      font-size: 17px;
+      font-size: 0.17rem;
     }
     /deep/ .ivu-icon-ios-arrow-down:before {
       content: "\f33d";
-      font-size: 17px;
+      font-size:  0.17rem;
     }
     /deep/ .ivu-input-number-input,
     /deep/ .ivu-input-number,
@@ -385,14 +249,74 @@ export default {
       border: none;
     }
     /deep/ .ivu-input-number-handler-wrap{
+      width: 0.22rem;
       border:none;
       background: none;
       &>a{
         border: none;
       }
+      .ivu-input-number-handler{
+        height: 0.16rem;
+      }
+      .ivu-input-number-handler-down-inner,
+      .ivu-input-number-handler-up-inner{
+        width: 0.12rem;
+        height: 0.12rem;
+        line-height: 0.12rem;
+        font-size: 0.14rem;
+        right: 0.05rem;
+      }
     }
     /deep/ .ivu-icon-md-print:before {
-      font-size: 20px;
+      font-size: 0.2rem;
+    }
+
+    /deep/ .ivu-select-single .ivu-select-selection .ivu-select-placeholder,
+    /deep/ .ivu-select-single .ivu-select-selection .ivu-select-selected-value{
+      height: 0.3rem;
+      line-height: 0.3rem;
+      font-size: 0.14rem;
+    }
+    /deep/ .ivu-select-single .ivu-select-selection{
+      height: 0.32rem;
+    }
+    /deep/ .ivu-select-item{
+      padding: 0.07rem 0.16rem;
+      clear: both;
+      color: #515a6e;
+      font-size: 0.14rem!important;
+    }
+    /deep/ .ivu-checkbox-wrapper{
+      font-size: 0.14rem;
+      margin-right: 0.08rem;
+    }
+    /deep/ .ivu-checkbox-inner{
+      width: 0.16rem;
+      height: 0.16rem;
+      border-radius: 0.02rem;
+      border: 0.01rem solid #dcdee2;
+    }
+    /deep/ .ivu-checkbox-checked .ivu-checkbox-inner:after{
+      width: 0.04rem;
+      height: 0.08rem;
+      top: 0.02rem;
+      left: 0.05rem;
+    }
+    /deep/ .ivu-input-number-input-wrap{
+      height: 0.32rem;
+    }
+    /deep/ .ivu-input-number-input{
+      height: 0.32rem;
+      line-height: 0.32rem;
+      padding: 0 0.07rem;
+      border-radius: 0.04rem;
+    }
+    /deep/ .ivu-input-number{
+      font-size: 0.14rem;
+      width: 0.8rem;
+      height: 0.32rem;
+      line-height: 0.32rem;
+      border-radius: 0.04rem;
     }
     /deep/ .ivu-collapse{
       border-bottom: none;
@@ -400,7 +324,7 @@ export default {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 20px 15px 20px 20px;
+        padding: 0.2rem 0.15rem 0.2rem 0.2rem;
         height: auto;
         line-height: normal;
       }
@@ -413,25 +337,25 @@ export default {
       .ivu-collapse-content-box>div{
         display: flex;
         align-items: center;
-        margin-top: 20px;
+        margin-top: 0.2rem;
         text-align: left;
-        padding: 0 20px;
+        padding: 0 0.2rem;
         &>span:first-child{
           display: inline-block;
-          width: 150px;
+          width: 1.5rem;
         }
         &>div:last-child{
           flex: 1;
         }
         &:last-child{
-          font-size: 13px;
+          font-size: 0.13rem;
           justify-content: space-between;
-          margin-top: 40px;
+          margin-top: 0.4rem;
           cursor: pointer;
         }
         .ivu-checkbox-group-item{
           display: block;
-          margin-bottom: 20px;
+          margin-bottom: 0.2rem;
         }
       }
       .ivu-collapse-content-box .resetStyle{
@@ -439,21 +363,21 @@ export default {
       }
     }
     &>div:first-child span:first-child{
-      font-size: 16px;
+      font-size: 0.16rem;
     }
     &>div:first-child > div:last-child{
       text-align: right;
-      font-size: 14px;
+      font-size: 0.14rem;
     }
     &>div:not(:last-child){
       display: flex;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 0.2rem;
       text-align: left;
-      padding: 0 20px;
+      padding: 0 0.2rem;
       &>span:first-child{
         display: inline-block;
-        width: 150px;
+        width: 1.5rem;
       }
       &>div:last-child{
         flex: 1;
@@ -461,13 +385,19 @@ export default {
     }
   }
   .right-bottom{
-    height: 60px;
+    height: 0.6rem;
     display: flex;
     align-items: center;
-    padding: 0 20px;
+    padding: 0 0.2rem;
     justify-content: flex-end;
     &>button:last-child{
-      margin-left: 10px;
+      margin-left: 0.1rem;
+    }
+    /deep/ .ivu-btn{
+      height: 0.32rem;
+      padding: 0 0.15rem;
+      font-size: 0.14rem;
+      border-radius: 0.04rem;
     }
   }
 }
@@ -480,4 +410,5 @@ body {
   user-select: none;
   overflow: hidden;
 }
+/*  */
 </style>

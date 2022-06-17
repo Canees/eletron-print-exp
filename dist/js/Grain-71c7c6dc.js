@@ -1,1 +1,0 @@
-import{n as s}from"./iview-e6e434cb.js";var o=function(){var t=this,e=t.$createElement,r=t._self._c||e;return r("div",{staticClass:"upfile"},[t._v(" test3 ")])},_=[];const a={},n={};var l=s(a,o,_,!1,c,null,null,null);function c(t){for(let e in n)this[e]=n[e]}var u=function(){return l.exports}();export{u as default};

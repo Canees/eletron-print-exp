@@ -45,6 +45,7 @@ module.exports = {
     'vue/no-v-html': 0,
     'vue/order-in-components': 0,
     'no-unused-vars': 1,
-    'vue/no-reserved-component-names': 0
+    'vue/no-reserved-component-names': 0,
+    'no-new': 0
   }
 }

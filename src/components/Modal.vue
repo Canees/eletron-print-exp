@@ -1,21 +1,25 @@
 <template>
-  <div class="modal" v-if="show" @click="callBack">
+  <div
+    v-if="show"
+    class="modal"
+    @click="callBack"
+  >
     <div class="content">
       <template>
-        <slot name="content"></slot>
+        <slot name="content" />
       </template>
     </div>
   </div>
 </template>
 <script>
 export default {
-  props: ["show"],
+  props: [ 'show' ],
   methods: {
     callBack() {
-      this.$emit("callBack", false);
-    },
-  },
-};
+      this.$emit('callBack', false)
+    }
+  }
+}
 </script>
 <style lang="less" scoped>
 .modal{

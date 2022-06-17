@@ -20,7 +20,9 @@ export default {
       // 通知主进程开启打印窗口
       const electron = window.$electron || null
       if (electron) {
-        electron.ipcRenderer.send('openPrint', true)
+        const w = window.innerWidth
+        const h = window.innerHeight
+        electron.ipcRenderer.send('openPrint', { w, h })
       }
     }
   }
