@@ -1,6 +1,7 @@
 const {
   app, BrowserWindow, Menu, ipcMain
 } = require('electron')// 引入electron
+// ----------------窗口init-------------
 let win = null
 let loadingWin = null
 let print = null
@@ -44,10 +45,17 @@ const createWindow = () => {
   win.on('close', () => {
     // 回收BrowserWindow对象
     win = null
+    print = null
   })
 }
-// 创建打印窗口
+// 创建打印窗口=>宽高根据主窗口宽高80%定
 const createPrint = () => {
+  // 获取主窗口宽高
+  // const winWH = win.getBounds()
+  // const winWidth = 0
+  // const winHeight = 0
+
+  // console.log(6666, winWH)
   print = new BrowserWindow({
     width: 1310,
     height: 860,
@@ -55,7 +63,12 @@ const createPrint = () => {
     resizable: false,
     center: true,
     transparent: true,
-    show: false
+    show: false,
+    webPreferences: {
+      contextIsolation: false,
+      nodeIntegration: true,
+      webSecurity: false
+    }
   })// 创建一个窗口
   print.loadFile('dist/print.html')
   // print.webContents.openDevTools()
@@ -64,6 +77,8 @@ const createPrint = () => {
     print = null
   })
 }
+
+//  --------------事件监听fn-------------
 // 事件监听
 app.on('ready', async () => {
   showLoading()
@@ -74,8 +89,9 @@ app.on('ready', async () => {
     loadingWin.close()
     win.show()
   })
-  // 监听是否打开print
-  ipcMain.on('createBW', (state) => {
+
+  // 监听打开print
+  ipcMain.on('openPrint', (event, data) => {
     // TODO: 页面数据生成PDF
 
     // TODO: 数据回传打印组件
@@ -83,7 +99,14 @@ app.on('ready', async () => {
     // 显示打印组件
     print.show()
 
-    console.log(123, state)
+    console.log('open', data)
+  })
+
+  // 监听关闭print
+  ipcMain.on('closePrint', (event, data) => {
+    console.log('close', data)
+    // 显示打印组件
+    print.hide()
   })
 })
 

@@ -180,7 +180,9 @@
         <Button type="primary">
           打印
         </Button>
-        <Button>取消</Button>
+        <Button @click="close">
+          取消
+        </Button>
       </div>
     </div>
   </div>
@@ -198,6 +200,15 @@ export default {
           label: 'test'
         }
       ]
+    }
+  },
+  methods: {
+    close() {
+      const electron = window.$electron || null
+      console.log(electron)
+      if (electron) {
+        electron.ipcRenderer.send('closePrint', false)
+      }
     }
   }
 }

@@ -17,11 +17,10 @@ export default {
   },
   methods: {
     test() {
-      console.log(123)
       // 通知主进程开启打印窗口
       const electron = window.$electron || null
       if (electron) {
-        electron.ipcRenderer.send('createBW', true)
+        electron.ipcRenderer.send('openPrint', true)
       }
     }
   }
