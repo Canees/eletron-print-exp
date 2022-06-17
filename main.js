@@ -55,7 +55,7 @@ class InitWin {
     // 在窗口内要展示的内容index.html 就是打包生成的index.html
     obj.loadFile('dist/index.html')
     // 开启调试工具
-    obj.webContents.openDevTools()
+    // obj.webContents.openDevTools()
     // 事件监听
     obj.on('close', () => {
       // 回收BrowserWindow对象
@@ -84,12 +84,26 @@ class InitWin {
       }
     })// 创建一个窗口
     obj.loadFile('dist/print.html')
-    // print.webContents.openDevTools()
+    obj.webContents.openDevTools()
     obj.on('close', () => {
       // 回收BrowserWindow对象
       this.printWin = null
     })
     return obj
+  }
+
+  /**
+   * 发送打印机列表
+   * @param {Obj} win 窗口对象
+   * @param {String} eventName 需要发送事件名称
+   */
+  async getPrintList(win) {
+    try {
+      const list = await win.webContents.getPrintersAsync()
+      win.webContents.send('getPrintList', list)
+    } catch (error) {
+      console.log('请升级electron版本')
+    }
   }
 
   /**
@@ -107,12 +121,11 @@ class InitWin {
       })
 
       // 监听打开print
-      ipcMain.on('openPrint', (event, data) => {
+      ipcMain.on('openPrint', async (event, data) => {
         // TODO: 页面数据生成PDF
 
-        // TODO: 数据回传打印组件
-
-        // 显示打印组件
+        // 回传打印机列表
+        await this.getPrintList(this.printWin)
         this.printWin.show()
         console.log('open', data)
       })

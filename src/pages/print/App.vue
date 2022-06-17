@@ -203,8 +203,8 @@ export default {
       // 打印机列表
       deviceName: [
         {
-          value: 'test',
-          label: 'test'
+          label: '11111111111111111111111111111111111',
+          value: 0
         }
       ],
       // 工作表的页数
@@ -322,7 +322,7 @@ export default {
       ],
       // 选定数据
       selectData: {
-        deviceName: 'test', // 目标打印机
+        deviceName: '', // 目标打印机
         pagesPerSheet: 1, // 工作表的页数
         copies: 1, // 份数
         Landscape: 0, // 布局
@@ -336,13 +336,31 @@ export default {
     }
   },
   methods: {
-
     // 关闭打印
     close() {
-      const electron = window.$electron || null
-      if (electron) {
-        electron.ipcRenderer.send('closePrint', false)
+      const { ipcRenderer } = window.$electron || null
+      if (ipcRenderer) {
+        ipcRenderer.send('closePrint', false)
       }
+    }
+  },
+  mounted() {
+    const { ipcRenderer } = window.$electron || null
+    if (ipcRenderer) {
+      ipcRenderer.on('getPrintList', (event, list) => {
+        const arr = []
+        let isDefault = ''
+        for (let k = 0; k < list.length; k++) {
+          const el = list[k]
+          if (el.isDefault) isDefault = el.name
+          arr.push({
+            value: el.name,
+            label: el.displayName
+          })
+        }
+        this.deviceName = arr
+        this.selectData.deviceName = isDefault
+      })
     }
   }
 }
@@ -383,6 +401,21 @@ export default {
     /deep/ .ivu-select-selection{
       background: rgb(241, 243, 244);
       border: none;
+    }
+    /deep/ .ivu-select-item{
+      width: 200px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    /deep/ .ivu-select-selection .ivu-select-selected-value{
+      width: 200px;
+    }
+    /deep/ .ivu-select-selection{
+      &>div{
+        display: flex;
+        align-items: center;
+      }
     }
     /deep/ .ivu-input-number-handler-wrap{
       border:none;
