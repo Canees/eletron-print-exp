@@ -1,6 +1,8 @@
 const {
   app, BrowserWindow, Menu, ipcMain
 } = require('electron')// 引入electron
+const path = require('path')
+const fs = require('fs')
 
 class InitWin {
   constructor() {
@@ -9,6 +11,7 @@ class InitWin {
     this.loadingWin = null
     this.mainWin = null
     this.printWin = null
+    this.filePath = path.join(__dirname, './dist/print.pdf')
     this.on()
   }
 
@@ -93,17 +96,30 @@ class InitWin {
   }
 
   /**
-   * 发送打印机列表
-   * @param {Obj} win 窗口对象
-   * @param {String} eventName 需要发送事件名称
+   * 保存打印文件默认保存在dist中
+   * @param {object} win
+   * @param {object} option
    */
-  async getPrintList(win) {
-    try {
-      const list = await win.webContents.getPrintersAsync()
-      win.webContents.send('getPrintList', list)
-    } catch (error) {
-      console.log('请升级electron版本')
+  async SavePrintData(win, option) {
+    if (!option || !Object.keys(option).length) {
+      option = {
+        marginsType: 1, // 默认边距
+        pageSize: 'A4',
+        printBackground: true, // 文件中包含 CSS 背景
+        printSelectionOnly: false,
+        landscape: false// 纵向模式
+      }
     }
+    const buffer = await win.webContents.printToPDF(option)
+    return new Promise((resolve, reject) => {
+      fs.writeFile(this.filePath, buffer, (err) => {
+        if (err) {
+          console.log('save error')
+          return reject(err)
+        }
+        return resolve(this.filePath)
+      })
+    })
   }
 
   /**
@@ -121,13 +137,21 @@ class InitWin {
       })
 
       // 监听打开print
-      ipcMain.on('openPrint', async (event, data) => {
-        // TODO: 页面数据生成PDF
-
-        // 回传打印机列表
-        await this.getPrintList(this.printWin)
-        this.printWin.show()
-        console.log('open', data)
+      ipcMain.on('openPrint', async (event) => {
+        try {
+          // 获取当前BW实例打印机列表
+          const currentWin = event.sender.getOwnerBrowserWindow()
+          const list = await currentWin.webContents.getPrintersAsync()
+          this.printWin.webContents.send('getData', list)
+          this.printWin.show()
+          // 转成PDF文件
+          const filePath = await this.SavePrintData(currentWin)
+          // 渲染进程加载PDF
+          this.printWin.webContents.send('loadingPDF', filePath)
+        } catch (error) {
+          console.log(error)
+          this.printWin.webContents.send('loadingPDF', '')
+        }
       })
 
       // 监听关闭print

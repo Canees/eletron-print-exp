@@ -40,13 +40,13 @@ export default ({ mode }) => defineConfig({
       '@': path.resolve(__dirname, './src')
     }
   },
-  plugins: [createVuePlugin(), viteCompression({ disable: true }),eslint({ fix: true })],
+  plugins: [ createVuePlugin(), viteCompression({ disable: true }), eslint({ fix: true }) ],
   server: {
     host: 'localhost',
     port: 6547,
     open: true,
     strictPort: false,
-    https: false,
+    https: false
     // 反向代理
     // proxy: {
     //   '/': {
@@ -59,22 +59,22 @@ export default ({ mode }) => defineConfig({
   build: {
     rollupOptions: {
       input: entryConfig(),
-      output: { //静态资源分类打包
+      output: { // 静态资源分类打包
         chunkFileNames: 'js/[name]-[hash].js',
         entryFileNames: 'js/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash].[ext]'
       }
     },
-    terserOptions: { //去掉打印
+    terserOptions: { // 去掉打印
       compress: {
         drop_console: true,
-        drop_debugger: true,
-      },
-    },
+        drop_debugger: true
+      }
+    }
   },
-  define: { //环境变量配置
+  define: { // 环境变量配置
     'process.env': {
-      'SERVERURL': mode === 'development' ? 'http://127.0.0.1:5000':'http://127.0.0.1:5000'
+      SERVERURL: mode === 'development' ? 'http://127.0.0.1:5000' : 'http://127.0.0.1:5000'
     }
   }
 })

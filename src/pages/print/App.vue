@@ -1,7 +1,11 @@
 <template>
   <div id="app">
     <div class="left">
-      test
+      <VuePdfEmbed
+        v-if="loadingPDF"
+        :source="loadingPDF"
+      />
+      <Loading v-else />
     </div>
     <div>
       <div class="right">
@@ -26,22 +30,6 @@
             </Select>
           </div>
         </div>
-        <!-- <div>
-          <span>页面</span>
-          <div>
-            <Select
-              v-model="selectData.pagesPerSheet"
-            >
-              <Option
-                v-for="item in pagesPerSheet"
-                :key="item.value"
-                :value="item.value"
-              >
-                {{ item.label }}
-              </Option>
-            </Select>
-          </div>
-        </div> -->
         <div>
           <span>份数</span>
           <div>
@@ -197,16 +185,17 @@
   </div>
 </template>
 <script>
+import VuePdfEmbed from 'vue-pdf-embed/dist/vue2-pdf-embed'
+import Loading from './components/loading.vue'
 export default {
+  components: {
+    VuePdfEmbed,
+    Loading
+  },
   data() {
     return {
       // 打印机列表
-      deviceName: [
-        {
-          label: '11111111111111111111111111111111111',
-          value: 0
-        }
-      ],
+      deviceName: [ ],
       // 工作表的页数
       pagesPerSheet: [
         {
@@ -332,7 +321,8 @@ export default {
         pageSize: 'A4', // 纸张尺寸
         duplexMode: 'shortEdge'// 双面打印
       },
-      duplex: false
+      duplex: false,
+      loadingPDF: ''
     }
   },
   methods: {
@@ -345,9 +335,11 @@ export default {
     }
   },
   mounted() {
-    const { ipcRenderer } = window.$electron || null
-    if (ipcRenderer) {
-      ipcRenderer.on('getPrintList', (event, list) => {
+    this.loadingPDF = ''
+    const electron = window.$electron || null
+    if (electron) {
+      // 监听打印机数据
+      electron.ipcRenderer.on('getData', (event, list) => {
         const arr = []
         let isDefault = ''
         for (let k = 0; k < list.length; k++) {
@@ -360,6 +352,11 @@ export default {
         }
         this.deviceName = arr
         this.selectData.deviceName = isDefault
+      })
+      // 监听PDF文件准备完成
+      electron.ipcRenderer.on('loadingPDF', (event, filePath) => {
+        this.loadingPDF = filePath
+        console.log(66, filePath)
       })
     }
   }
@@ -375,12 +372,20 @@ export default {
   display: flex;
   font-size: 15px;
   color: black;
+  width: 970px;
   .left{
     width: 560px;
     height: 760px;
     background: rgb(218, 220, 224);
     overflow-y: scroll;
     overflow-x: hidden;
+    position: relative;
+    /deep/ .loader{
+      position: absolute;
+      top: 45%;
+      left: 45%;
+      transform: translate(-45%,-45%);
+    }
   }
   .right{
     width: 410px;

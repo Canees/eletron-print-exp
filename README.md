@@ -3,12 +3,11 @@
 总体思路是用vue写了仿谷歌的打印组件，api使用el的BrowserWindow实例的webContents.print，使用printopdf来达到预览功能。
 ```
 
-# TODO:
+# TODO:（渲染进程与主进程之间交互）
 ```
-1. 生成PDF文件|数据回传打印组件
-2. 打印组件优化参数
-3. 打印组件预览PDF文件
 4. 打印功能API对接
+5. 打印参数调整->预览PDF
+
 ```
 
 
